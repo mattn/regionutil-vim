@@ -41,8 +41,8 @@ function! s:change_content(lhs, rhs, content)
   if len(newlines) == 1
     call setline(line('.'), oldlines[0][:a:lhs[1]-2] . newlines[0] . oldlines[-1][a:rhs[1]])
   else
-	let newlines[0] = oldlines[0][a:lhs[1]-2] . newlines[0]
-	let newlines[-1] .= oldlines[-1][a:rhs[1]]
+    let newlines[0] = oldlines[0][a:lhs[1]-2] . newlines[0]
+    let newlines[-1] .= oldlines[-1][a:rhs[1]]
     call setline(line('.'), newlines[0])
     call append(line('.'), newlines[1:])
   endif
@@ -83,3 +83,5 @@ endfunction
 function! s:search_region(start, end)
   return [searchpos(a:start, 'bcnW'), searchpos(a:end, 'cneW')]
 endfunction
+
+" vim:set et:
