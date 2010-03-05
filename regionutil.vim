@@ -56,25 +56,29 @@ function! s:select_region(region)
   call setpos('.', [0, a:region[1][0], a:region[1][1], 0])
 endfunction
 
+" point_in_region : check point is in the region
+"   this function return 0 or 1
+function! s:point_in_region(point, region)
+  if !s:region_is_valid(a:region) | return 0 | endif
+  if a:region[0][0] > a:point[0] | return 0 | endif
+  if a:region[1][0] < a:point[0] | return 0 | endif
+  if a:region[0][0] == a:point[0] && a:region[0][1] > a:point[1] | return 0 | endif
+  if a:region[1][0] == a:point[0] && a:region[1][1] < a:point[1] | return 0 | endif
+  return 1
+endfunction
+
 " cursor_in_region : check cursor is in the region
 "   this function return 0 or 1
 function! s:cursor_in_region(region)
-  if a:region[0][0] == 0 || a:region[1][0] == 0
-    return 0
-  endif
+  if !s:region_is_valid(a:region) | return 0 | endif
   let cur = getpos('.')[1:2]
-  let fpos1 = str2float(a:region[0][0].'.'.a:region[0][1])
-  let fpos2 = str2float(cur[0].'.'.cur[1])
-  let fpos3 = str2float(a:region[1][0].'.'.a:region[1][1])
-  return fpos1 <= fpos2 && fpos2 <= fpos3
+  return s:point_in_region(cur, a:region)
 endfunction
 
 " region_is_valid : check region is valid
 "   this function return 0 or 1
 function! s:region_is_valid(region)
-  if a:region[0][0] == 0 || a:region[1][0] == 0
-    return 0
-  endif
+  if a:region[0][0] == 0 || a:region[1][0] == 0 | return 0 | endif
   return 1
 endfunction
 
@@ -95,6 +99,15 @@ function! s:get_content(region)
     let lines[-1] = lines[-1][:a:region[1][1]-1]
   endif
   return join(lines, "\n")
+endfunction
+
+" region_in_region : check region is in the region
+"   this function return 0 or 1
+function! s:region_in_region(outer, inner)
+  if !s:region_is_valid(region)
+    return 0
+  endif
+  return s:point_in_region(a:inner[0], a:outer) && s:point_in_region(a:inner[1], a:outer)
 endfunction
 
 " vim:set et:
