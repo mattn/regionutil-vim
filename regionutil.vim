@@ -84,4 +84,17 @@ function! s:search_region(start, end)
   return [searchpos(a:start, 'bcnW'), searchpos(a:end, 'cneW')]
 endfunction
 
+" get_content : get content in region
+"   this function return string in region
+function! s:get_content(lhs, rhs)
+  let lines = getline(a:lhs[0], a:rhs[0])
+  if a:lhs[0] == a:rhs[0]
+    let lines[0] = lines[0][a:lhs[1]-1:a:rhs[1]-1]
+  else
+    let lines[0] = lines[0][a:lhs[1]-1:]
+    let lines[-1] = lines[-1][:a:rhs[1]-1]
+  endif
+  return join(lines, "\n")
+endfunction
+
 " vim:set et:
